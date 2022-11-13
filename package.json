@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "parcel": "npx parcel ./src/index.html"
   },
   "author": "sylvaintagnabou@gmail.com",
   "license": "ISC",
