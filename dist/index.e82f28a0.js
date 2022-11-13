@@ -553,14 +553,23 @@ scene.add(box);
 // Big box
 const planeGeometry = new _three.PlaneGeometry(30, 30);
 const planeMaterial = new _three.MeshBasicMaterial({
-    color: 0xffffff
+    color: 0xffffff,
+    side: _three.DoubleSide
 });
 const plane = new _three.Mesh(planeGeometry, planeMaterial);
 scene.add(plane);
-plane.rotation.x = -0, Math.PI;
+plane.rotation.x = -0.5 * Math.PI;
 //grid helper 
 const gridHelper = new _three.GridHelper(30);
 scene.add(gridHelper);
+//sphere 
+const sphereGeometry = new _three.SphereGeometry(4);
+const sphereMaterial = new _three.MeshBasicMaterial({
+    color: 0x0000ff,
+    wireframe: true
+});
+const sphere = new _three.Mesh(sphereGeometry, sphereMaterial);
+scene.add(sphere);
 function animate(time) {
     box.rotation.x = time / 1000;
     box.rotation.y = time / 1000;
