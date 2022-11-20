@@ -532,9 +532,14 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"dV6cC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _three = require("three");
 var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
 var _datGui = require("dat.gui");
+var _nebulaJpg = require("../img/nebula.jpg");
+var _nebulaJpgDefault = parcelHelpers.interopDefault(_nebulaJpg);
+var _starsJpg = require("../img/stars.jpg");
+var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
 const renderer = new _three.WebGLRenderer();
 renderer.shadowMap.enabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -595,7 +600,45 @@ const sLightHelper = new _three.SpotLightHelper(spotLight);
 scene.add(sLightHelper);
 // scene.fog = new THREE.Fog(0xFFFFFF, 0, 200);
 scene.fog = new _three.FogExp2(0xFFFFFF, 0.01);
-renderer.setClearColor(0xFFEA00);
+// renderer.setClearColor(0xFFEA00);
+const textureLoader = new _three.TextureLoader();
+// scene.background = textureLoader.load(stars);
+const cubeTextureLoader = new _three.CubeTextureLoader();
+scene.background = cubeTextureLoader.load([
+    (0, _nebulaJpgDefault.default),
+    (0, _nebulaJpgDefault.default),
+    (0, _starsJpgDefault.default),
+    (0, _starsJpgDefault.default),
+    (0, _starsJpgDefault.default),
+    (0, _starsJpgDefault.default)
+]);
+const box2Geometry = new _three.BoxGeometry(4, 4, 4);
+const box2Material = new _three.MeshStandardMaterial({
+});
+const box2MultiMaterial = [
+    new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _starsJpgDefault.default))
+    }),
+    new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _nebulaJpgDefault.default))
+    }),
+    new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _starsJpgDefault.default))
+    }),
+    new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _nebulaJpgDefault.default))
+    }),
+    new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _starsJpgDefault.default))
+    }),
+    new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _nebulaJpgDefault.default))
+    })
+];
+const box2 = new _three.Mesh(box2Geometry, box2MultiMaterial);
+scene.add(box2);
+box2.position.set(0, 15, 10);
+// box2.material.map = textureLoader.load(nebula);
 const gui = new _datGui.GUI();
 const options = {
     sphereColor: 0xffea00,
@@ -616,6 +659,12 @@ gui.add(options, "angle", 0, 1);
 gui.add(options, "penumbra", 0, 1);
 gui.add(options, "intensity", 0, 1);
 let step = 0;
+const mousePosition = new _three.Vector2();
+window.addEventListener("mousemove", (e)=>{
+    mousePosition.x = e.clientX / window.innerWidth * 2 - 1;
+    mousePosition.y = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+const rayCaster = new _three.Raycaster();
 function animate(time) {
     box.rotation.x = time / 1000;
     box.rotation.y = time / 1000;
@@ -625,11 +674,14 @@ function animate(time) {
     spotLight.penumbra = options.penumbra;
     spotLight.intensity = options.intensity;
     sLightHelper.update();
+    rayCaster.setFromCamera(mousePosition, camera);
+    const intersects = rayCaster.intersectObjects(scene.children);
+    console.log(intersects);
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","dat.gui":"k3xQk"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","dat.gui":"k3xQk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../img/nebula.jpg":"ibF8l","../img/stars.jpg":"2IYlH"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
@@ -32809,6 +32861,46 @@ var index = {
 };
 exports.default = index;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["eZyLq","dV6cC"], "dV6cC", "parcelRequiredd4a")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ibF8l":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("2MSMO") + "nebula.a535bdf2.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"2IYlH":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("2MSMO") + "stars.a1d7fe60.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}]},["eZyLq","dV6cC"], "dV6cC", "parcelRequiredd4a")
 
 //# sourceMappingURL=index.e82f28a0.js.map
