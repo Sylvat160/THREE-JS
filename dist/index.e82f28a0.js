@@ -577,20 +577,33 @@ sphere.position.set(-10, 10, 0);
 sphere.castShadow = true;
 const ambiantLight = new _three.AmbientLight(0x333333);
 scene.add(ambiantLight);
-const directionalLight = new _three.DirectionalLight(0xffffff);
-scene.add(directionalLight);
-directionalLight.position.set(-30, 50, 0);
-directionalLight.castShadow = true;
-directionalLight.shadow.camera.bottom = -12;
-const dLightHelper = new _three.DirectionalLightHelper(directionalLight, 5);
-scene.add(dLightHelper);
-const dLightShadowHelper = new _three.CameraHelper(directionalLight.shadow.camera);
-scene.add(dLightShadowHelper);
+// const directionalLight = new THREE.DirectionalLight(0xffffff);
+// scene.add(directionalLight);
+// directionalLight.position.set(-30,50,0);
+// directionalLight.castShadow = true;
+// directionalLight.shadow.camera.bottom = -12;
+// const dLightHelper = new THREE.DirectionalLightHelper(directionalLight , 5);
+// scene.add(dLightHelper);
+// const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(dLightShadowHelper);
+const spotLight = new _three.SpotLight(0xffffff);
+scene.add(spotLight);
+spotLight.position.set(-100, 100, 0);
+spotLight.castShadow = true;
+spotLight.angle = 0.2;
+const sLightHelper = new _three.SpotLightHelper(spotLight);
+scene.add(sLightHelper);
+// scene.fog = new THREE.Fog(0xFFFFFF, 0, 200);
+scene.fog = new _three.FogExp2(0xFFFFFF, 0.01);
+renderer.setClearColor(0xFFEA00);
 const gui = new _datGui.GUI();
 const options = {
     sphereColor: 0xffea00,
     wireframe: false,
-    speed: 0.01
+    speed: 0.01,
+    angle: 0.2,
+    penumbra: 0,
+    intensity: 1
 };
 gui.addColor(options, "sphereColor").onChange((e)=>{
     sphere.material.color.set(e);
@@ -599,12 +612,19 @@ gui.add(options, "wireframe").onChange((e)=>{
     sphere.material.wireframe = e;
 });
 gui.add(options, "speed", 0, 0.1);
+gui.add(options, "angle", 0, 1);
+gui.add(options, "penumbra", 0, 1);
+gui.add(options, "intensity", 0, 1);
 let step = 0;
 function animate(time) {
     box.rotation.x = time / 1000;
     box.rotation.y = time / 1000;
     step += options.speed;
     sphere.position.y = 10 * Math.abs(Math.sin(step));
+    spotLight.angle = options.angle;
+    spotLight.penumbra = options.penumbra;
+    spotLight.intensity = options.intensity;
+    sLightHelper.update();
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
